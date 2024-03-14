@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser"); // Import body-parser module
+const bodyParser = require("body-parser"); 
 const authRoutes = require("./authRoutes");
 
 const app = express();
@@ -10,8 +10,8 @@ app.use(bodyParser.json());
 
 const cors = require('cors');
 const corsOptions = {
-    origin: 'http://localhost:3000', 
-    optionsSuccessStatus: 200 
+  origin: '*', 
+  optionsSuccessStatus: 200 
   };
   
   app.use(cors(corsOptions));

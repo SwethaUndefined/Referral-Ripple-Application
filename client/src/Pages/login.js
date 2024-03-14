@@ -20,11 +20,15 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await loginCheck(formData);
+      message.success("Login Successfull");
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1000);
     } catch (error) {
       message.error("Please Register to continue");
       setTimeout(() => {
         window.location.href = "/register";
-      }, 3000);
+      }, 2000);
     }
   };
   return (

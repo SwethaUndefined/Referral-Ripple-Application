@@ -1,12 +1,27 @@
+
 import axios from "axios";
 
-export const loginCheck = (values) => {
-  return axios.post(`/api/login`, values)
-    .then((res) => {
-      return res.data; // Return the response data
-    })
-    .catch((error) => {
-      console.error('LoginCheck::error', error);
-      throw error; // Throw the error for the caller to handle
-    });
+const instance = axios.create({
+  baseURL: 'http://localhost:5000/api', 
+});
+
+export const loginCheck = async (values) => {
+  try {
+    const res = await instance.post('/login', values);
+    return res.data;
+  } catch (error) {
+    console.error('LoginCheck::error', error);
+    throw error;
+  }
 };
+
+export const registerUser = async (values) => {
+    console.log({values})
+    try {
+    const res = await instance.post(`/register`, values);
+    return res.data;
+  } catch (error) {
+    console.error('Register::error', error);
+    throw error;
+  }
+  };
