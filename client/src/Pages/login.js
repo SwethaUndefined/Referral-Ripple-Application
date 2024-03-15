@@ -22,7 +22,7 @@ const Login = () => {
       const res = await loginCheck(formData);
       message.success("Login Successfull");
       setTimeout(() => {
-        window.location.href = "/dashboard";
+        window.location.href = "/dashboard?username=" + formData.username;
       }, 1000);
     } catch (error) {
       message.error("Please Register to continue");
@@ -30,6 +30,10 @@ const Login = () => {
         window.location.href = "/register";
       }, 2000);
     }
+  };
+  
+  const handleRegisterClick = () => {
+    window.location.href = "/register";
   };
   return (
     <section className="main">
@@ -63,7 +67,7 @@ const Login = () => {
           </button>
           <div className="register-link">
             <p>
-              Dont have an account? <a href="#">Register</a>
+              Dont have an account? <a href="#" onClick={handleRegisterClick}>Register</a>
             </p>
           </div>
         </form>

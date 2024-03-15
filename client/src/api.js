@@ -25,3 +25,13 @@ export const registerUser = async (values) => {
     throw error;
   }
   };
+
+  export const getUsers = async (values) => {
+    try {
+    const res = await instance.get(`/getUsers`, values);
+    return res.data;
+  } catch (error) {
+    console.error('GetUsers::error', error);
+    throw error;
+  }
+  };

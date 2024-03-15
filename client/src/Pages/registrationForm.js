@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Row, Col, Typography, Input, Button, message } from "antd";
+import { message } from "antd";
 import "./registrationForm.css";
-import { registerUser } from "../api"; // Assuming you have an API function for registering users
-
+import { registerUser } from "../api";
+import Dashboard from "./dashboard";
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
     username: "",
@@ -10,6 +10,8 @@ const RegistrationForm = () => {
     password: "",
     contactNumber: "",
   });
+  const [referralCode, setReferralCode] = useState("");
+  const [userHasReferralCode, setUserHasReferralCode] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +24,16 @@ const RegistrationForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await registerUser(formData);
+      const formDataToSend = {
+        contactNumber: formData.contactNumber,
+        email: formData.email,
+        password: formData.password,
+        username: formData.username,
+        referralCode: userHasReferralCode && referralCode.trim() !== "" ? referralCode.trim() : null,
+        automaticReferralCode: generateReferralCode()
+      };
+  
+      const res = await registerUser(formDataToSend);
       message.success("Registration successful");
       setTimeout(() => {
         window.location.href = "/dashboard";
@@ -31,9 +42,35 @@ const RegistrationForm = () => {
       message.error("Registration Error");
     }
   };
+  
+  
+
   const handleLoginClick = () => {
     window.location.href = "/";
   };
+
+  const handleReferralCodeChange = (e) => {
+    const code = e.target.value;
+    setReferralCode(code);
+    setUserHasReferralCode(!!code); 
+  };
+
+  const generateReferralCode = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const codeLength = 6;
+    let referralCode = '';
+    for (let i = 0; i < codeLength; i++) {
+      referralCode += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    setReferralCode(referralCode);
+    setUserHasReferralCode(false); 
+    return referralCode;
+  };
+
+  const handleGetReferralCode = () => {
+    generateReferralCode();
+  };
+
   return (
     <section className="main">
       <div className="wrapper">
@@ -83,6 +120,21 @@ const RegistrationForm = () => {
             />
             <i className="bx bxs-phone"></i>
           </div>
+          <div className="input-box">
+            <input
+              type="text"
+              name="referralCode"
+              placeholder="Have Referral Type here"
+              value={referralCode}
+              onChange={handleReferralCodeChange}
+            />
+            {!userHasReferralCode && (
+              <button type="button" onClick={handleGetReferralCode}>
+                Get Referral
+              </button>
+            )}
+            <i className="bx bx-user"></i>
+          </div>
           <button type="submit" className="btn">
             Register
           </button>
@@ -96,6 +148,7 @@ const RegistrationForm = () => {
           </div>
         </form>
       </div>
+      <Dashboard username={formData.username} />
     </section>
   );
 };
