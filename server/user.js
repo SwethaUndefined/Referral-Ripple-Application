@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 
-// Define the user schema for both login and registration
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique :  true
   },
   password: {
     type: String,
@@ -20,17 +19,13 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  referralCode: {
+  referredUserCode: {
     type: String
   },
-  automaticReferralCode: {
-    type: String,
-    required: true,
-    unique: true 
+  referralId: {
+    type: String,  
+    ref: 'ReferralTracking'  
   },
-  points: {
-    type: Number
-  }
 }, { collection: 'users' });
 
 

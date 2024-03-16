@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import { message } from "antd";
+import { message, Input, Button } from "antd";
 import "./registrationForm.css";
 import { registerUser } from "../api";
 import Dashboard from "./dashboard";
+
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     contactNumber: "",
+    referredUserCode: "",
   });
-  const [referralCode, setReferralCode] = useState("");
-  const [userHasReferralCode, setUserHasReferralCode] = useState(false);
+  const [passwordVisible, setPasswordVisible] = React.useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,24 +25,36 @@ const RegistrationForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let referralCodeToSend = null;
+      if (formData.referredUserCode.trim() !== "") {
+        referralCodeToSend = formData.referredUserCode.trim();
+      }
+  
       const formDataToSend = {
         contactNumber: formData.contactNumber,
         email: formData.email,
         password: formData.password,
         username: formData.username,
-        referralCode: userHasReferralCode && referralCode.trim() !== "" ? referralCode.trim() : null,
-        automaticReferralCode: generateReferralCode()
+        referredUserCode: referralCodeToSend,
       };
   
-      const res = await registerUser(formDataToSend);
-      message.success("Registration successful");
-      setTimeout(() => {
-        window.location.href = "/dashboard";
-      }, 1000);
+      const response = await registerUser(formDataToSend);
+      if (response.success) {
+        message.success("Registration successful");
+        setTimeout(() => {
+          window.location.href = "/dashboard?username=" + formDataToSend.username;
+        }, 1000);
+      }
     } catch (error) {
-      message.error("Registration Error");
+      if (error.response && error.response.status === 400) {
+        message.error("Username or email already exists");
+      } else {
+        console.error("Registration Error:", error);
+        message.error("Unexpected error occurred");
+      }
     }
   };
+  
   
   
 
@@ -49,30 +62,8 @@ const RegistrationForm = () => {
     window.location.href = "/";
   };
 
-  const handleReferralCodeChange = (e) => {
-    const code = e.target.value;
-    setReferralCode(code);
-    setUserHasReferralCode(!!code); 
-  };
-
-  const generateReferralCode = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const codeLength = 6;
-    let referralCode = '';
-    for (let i = 0; i < codeLength; i++) {
-      referralCode += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    setReferralCode(referralCode);
-    setUserHasReferralCode(false); 
-    return referralCode;
-  };
-
-  const handleGetReferralCode = () => {
-    generateReferralCode();
-  };
-
   return (
-    <section className="main">
+    <section className="registration-main">
       <div className="wrapper">
         <form onSubmit={handleSubmit}>
           <h1>Register</h1>
@@ -99,12 +90,17 @@ const RegistrationForm = () => {
             <i className="bx bxs-envelope"></i>
           </div>
           <div className="input-box">
-            <input
+            <Input.Password
+              className="inputpassword"
               type="password"
               name="password"
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
+              visibilityToggle={{
+                visible: passwordVisible,
+                onVisibleChange: setPasswordVisible,
+              }}
               required
             />
             <i className="bx bxs-lock-alt"></i>
@@ -123,16 +119,11 @@ const RegistrationForm = () => {
           <div className="input-box">
             <input
               type="text"
-              name="referralCode"
-              placeholder="Have Referral Type here"
-              value={referralCode}
-              onChange={handleReferralCodeChange}
+              name="referredUserCode"
+              placeholder="Referral Code(Optional)"
+              value={formData.referredUserCode}
+              onChange={handleChange}
             />
-            {!userHasReferralCode && (
-              <button type="button" onClick={handleGetReferralCode}>
-                Get Referral
-              </button>
-            )}
             <i className="bx bx-user"></i>
           </div>
           <button type="submit" className="btn">
@@ -141,14 +132,13 @@ const RegistrationForm = () => {
           <div className="login-link">
             <p>
               Already have an account?
-              <a href="#" onClick={handleLoginClick}>
+              <a href="#" onClick={handleLoginClick} className="login">
                 Login
               </a>
             </p>
           </div>
         </form>
       </div>
-      <Dashboard username={formData.username} />
     </section>
   );
 };

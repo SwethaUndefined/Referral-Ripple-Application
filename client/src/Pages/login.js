@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import { Row, Col, Typography, Input, Button, message } from "antd";
 import "./login.css";
 import { loginCheck } from "../api";
+import { useNavigate } from 'react-router-dom';
+
 const Login = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
-
+  const [passwordVisible, setPasswordVisible] = React.useState(false);
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -16,27 +19,31 @@ const Login = () => {
     });
   };
 
+
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await loginCheck(formData);
-      message.success("Login Successfull");
-      setTimeout(() => {
-        window.location.href = "/dashboard?username=" + formData.username;
-      }, 1000);
+      message.success("Login Successful");
+      localStorage.setItem("isLoggedIn", "true");
+      navigate(`/dashboard?username=${formData.username}`);
     } catch (error) {
-      message.error("Please Register to continue");
-      setTimeout(() => {
-        window.location.href = "/register";
-      }, 2000);
+      if (error.response && error.response.status === 401) {
+        message.error("Please enter the correct password.");
+      } else if (error.response && error.response.status === 404) {
+        message.error("Username not found. Please register to continue.");
+      } else {
+        message.error("An error occurred. Please try again later.");
+      }
     }
   };
-  
+
   const handleRegisterClick = () => {
     window.location.href = "/register";
   };
   return (
-    <section className="main">
+    <section className="login-main">
       <div className="wrapper">
         <form onSubmit={handleSubmit}>
           <h1>Login</h1>
@@ -52,10 +59,15 @@ const Login = () => {
             <i className="bx bxs-user"></i>
           </div>
           <div className="input-box">
-            <input
+            <Input.Password
+            className="inputpassword"
               type="password"
               name="password"
               placeholder="Password"
+              visibilityToggle={{
+                visible: passwordVisible,
+                onVisibleChange: setPasswordVisible,
+              }}
               value={formData.password}
               onChange={handleChange}
               required
@@ -67,7 +79,10 @@ const Login = () => {
           </button>
           <div className="register-link">
             <p>
-              Dont have an account? <a href="#" onClick={handleRegisterClick}>Register</a>
+              Dont have an account?{" "}
+              <a href="#" onClick={handleRegisterClick}>
+                Register
+              </a>
             </p>
           </div>
         </form>

@@ -1,24 +1,22 @@
 const mongoose = require('mongoose');
 
 const referralTrackingSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true 
+
+    referralCode : {
+        type : String,
+        required :  true,
+        unique : true
     },
-    automaticReferralCode: {
-        type: String,
-        required: true,
-        unique: true
+    points : {
+        type : Number,
     },
-    referralCode :{
-        type: String,
+    createdAt : {
+        type : Date
     },
-    referralCount: {
-        type: Number,
-        required: true
+    referralUsers_id : {
+        type : Array
     },
-}, { collection: 'referral_tracking' });
+}, { collection: 'referral' });
 
 const ReferralTracking = mongoose.model('ReferralTracking', referralTrackingSchema);
 
