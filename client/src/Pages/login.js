@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Row, Col, Typography, Input, Button, message } from "antd";
 import "./login.css";
 import { loginCheck } from "../api";
@@ -18,7 +18,13 @@ const Login = () => {
       [name]: value,
     });
   };
-
+  useEffect(() => {
+    const isLoggedIn = sessionStorage.getItem("isLoggedIn");
+    if (isLoggedIn === "true") {
+      const username = sessionStorage.getItem("username");
+      navigate(`/dashboard?username=${username}`);
+    }
+  }, []);
 
   
   const handleSubmit = async (e) => {
@@ -26,6 +32,7 @@ const Login = () => {
     try {
       const res = await loginCheck(formData);
       message.success("Login Successful");
+      sessionStorage.setItem("isLoggedIn", "true");
       navigate(`/dashboard?username=${formData.username}`);
     } catch (error) {
       if (error.response && error.response.status === 401) {

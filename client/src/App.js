@@ -4,7 +4,15 @@ import Login from './Pages/login';
 import RegistrationForm from './Pages/registrationForm';
 import Dashboard from './Pages/dashboard';
 
+const ProtectedRoute = ({ element }) => {
+  const isLoggedIn = sessionStorage.getItem("isLoggedIn") === "true";
 
+  if (!isLoggedIn) {
+    return <Navigate to="/" />;
+  }
+
+  return element;
+};
 
 const App = () => {
   return (
@@ -12,7 +20,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<RegistrationForm />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
       </Routes>
     </Router>
   );
