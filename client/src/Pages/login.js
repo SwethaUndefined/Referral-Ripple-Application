@@ -45,9 +45,6 @@ const Login = () => {
     }
   };
 
-  const handleRegisterClick = () => {
-    window.location.href = "/register";
-  };
   return (
     <section className="login-main">
       <div className="wrapper">
@@ -85,8 +82,8 @@ const Login = () => {
           </button>
           <div className="register-link">
             <p>
-              Dont have an account?{" "}
-              <a href="#" onClick={handleRegisterClick}>
+              Dont have an account?
+              <a href="/register" >
                 Register
               </a>
             </p>

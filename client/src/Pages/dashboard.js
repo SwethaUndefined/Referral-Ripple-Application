@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Typography, Input, Space, Avatar, Card } from "antd";
+import { Row, Col, Typography, Space, Avatar, Card } from "antd";
 import { useLocation } from "react-router-dom";
 import "./dashboard.css";
 import { UserOutlined } from "@ant-design/icons";
@@ -12,9 +12,7 @@ const Dashboard = () => {
   const [userData, setUserData] = useState({});
   const [referralData, setReferralData] = useState({});
   const [referrlUserLsit, setReferrlUserLsit] = useState([]);
-  useEffect(() => {
-    getInfo();
-  }, []);
+
   const getInfo = () => {
     getuserInfo(username)
       .then((res) => {
@@ -26,6 +24,11 @@ const Dashboard = () => {
         console.log(err);
       });
   };
+
+  useEffect(() => {
+    getInfo();
+  }, [getInfo]);
+  
   return (
     <section className="dashboard-section">
       <Row>

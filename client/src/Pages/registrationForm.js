@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { message, Input, Button } from "antd";
+import { message, Input } from "antd";
 import "./registrationForm.css";
 import { registerUser } from "../api";
-import Dashboard from "./dashboard";
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -45,9 +44,9 @@ const RegistrationForm = () => {
       const response = await registerUser(formDataToSend);
       if (response.success) {
         message.success("Registration successful");
-        setTimeout(() => {
-          window.location.href = "/dashboard?username=" + formDataToSend.username;
-        }, 1000);
+        sessionStorage.setItem("isLoggedIn", "true");
+        sessionStorage.setItem("username", formDataToSend.username);
+        window.location.href = "/dashboard?username=" + formDataToSend.username;
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
