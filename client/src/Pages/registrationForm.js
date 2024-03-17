@@ -24,6 +24,10 @@ const RegistrationForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!/^\d{10,}$/.test(formData.contactNumber)) {
+      message.warning("Contact number must contain at least 10 digits and only numeric characters.");
+      return; // Stop the form submission
+    }
     try {
       let referralCodeToSend = null;
       if (formData.referredUserCode.trim() !== "") {

@@ -1,14 +1,20 @@
+// PrivateRoute.js
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 
-const ProtectedRoute = ({ children }) => {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-
-  if (!isLoggedIn) {
-    return <Navigate to="/" />;
-  }
-
-  return children;
+const ProtectedRoute = ({ component: Component, isLoggedIn, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        isLoggedIn ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/" />
+        )
+      }
+    />
+  );
 };
 
 export default ProtectedRoute;

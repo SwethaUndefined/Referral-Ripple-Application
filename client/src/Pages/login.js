@@ -26,7 +26,6 @@ const Login = () => {
     try {
       const res = await loginCheck(formData);
       message.success("Login Successful");
-      localStorage.setItem("isLoggedIn", "true");
       navigate(`/dashboard?username=${formData.username}`);
     } catch (error) {
       if (error.response && error.response.status === 401) {

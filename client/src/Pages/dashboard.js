@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Typography, Input, Space, Avatar, Card, Table } from "antd";
+import { Row, Col, Typography, Input, Space, Avatar, Card } from "antd";
 import { useLocation } from "react-router-dom";
 import "./dashboard.css";
 import { UserOutlined } from "@ant-design/icons";
-import { getuserInfo, fetchReferralUsers } from "../api";
-const { Search } = Input;
-const { Column } = Table;
+import { getuserInfo } from "../api";
 
 const Dashboard = () => {
   const location = useLocation();
@@ -28,8 +26,6 @@ const Dashboard = () => {
         console.log(err);
       });
   };
-  console.log({userData})
-  console.log({ referrlUserLsit });
   return (
     <section className="dashboard-section">
       <Row>
@@ -73,12 +69,18 @@ const Dashboard = () => {
         </Col>
         <Col span={1}></Col>
         <Col span={22} style={{ display: "flex", overflowX: "auto" }}>
-          {referrlUserLsit.map((user, index) => (
-            <Card key={index} style={{ marginRight: 16 }}>
-              <Typography>Username: {user.username}</Typography>
-              <Typography>Contact Number: {user.contactNumber}</Typography>
-            </Card>
-          ))}
+          {referrlUserLsit.length === 0 ? (
+            <Col span={24} className="data">
+              <Typography className="empty">No referral users found</Typography>
+            </Col>
+          ) : (
+            referrlUserLsit.map((user, index) => (
+              <Card key={index} style={{ marginRight: 16 }}>
+                <Typography>Username: {user.username}</Typography>
+                <Typography>Contact Number: {user.contactNumber}</Typography>
+              </Card>
+            ))
+          )}
         </Col>
       </Row>
     </section>
