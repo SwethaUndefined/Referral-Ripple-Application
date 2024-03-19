@@ -15,20 +15,23 @@ const corsOptions = {
   
   app.use(cors(corsOptions));
 
-mongoose
+(async function dbConnect (){
+  
+  await mongoose
   .connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => {
     console.log("Connected to MongoDB");
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
   })
   .catch((error) => {
     console.error("MongoDB connection error:", error);
   });
+  })();
 
 app.use("/api", authRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
